@@ -1,10 +1,11 @@
 import AuthBanner from '@/components/AuthBanner';
-import React, { use, useState } from 'react';
+import React, { use, useContext, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import {AuthContext} from '../AuthProvider';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -12,6 +13,9 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigate=useNavigate();
+  const {isLoggedIn,setIsLoggedIn}=useContext(AuthContext);
+
+  
 
 
 
@@ -39,6 +43,7 @@ const Login = () => {
       const response = await axios.post("http://localhost:8000/api/v1/token/", userData);
       localStorage.setItem('access_token', response.data.access);
       localStorage.setItem('refresh_token', response.data.refresh);
+      setIsLoggedIn(true);
       navigate('/');
 
     }

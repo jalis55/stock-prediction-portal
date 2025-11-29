@@ -1,15 +1,23 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '@/AuthProvider';
 
 export default function Header() {
     const [open, setOpen] = useState(false);
+    const {isLoggedIn,setIsLoggedIn}=useContext(AuthContext);
+    const navigate=useNavigate()
 
     const navLinks = [
-
         { label: 'Login', href: '/login' },
         { label: 'Register', href: '/register' },
     ];
+    const handleLogout=()=>{
+        localStorage.removeItem('access_token');
+        setIsLoggedIn(false);
+        navigate('/login');
+
+    }
 
     return (
         <header className="col-span-4 col-start-1 sticky top-0 z-50 bg-white/90 backdrop-blur shadow-sm">
@@ -24,7 +32,7 @@ export default function Header() {
 
                 {/* Desktop Nav */}
                 <nav className="hidden md:flex items-center gap-6">
-                    {navLinks.map(({ label, href }) => (
+                    {!isLoggedIn && navLinks.map(({ label, href }) => (
 
                         <Link key={label} to={href} className="text-gray-700 hover:text-indigo-600 transition-colors">
                             <Button variant="outline">{label}</Button>
@@ -33,12 +41,7 @@ export default function Header() {
                         
                     ))}
                     
-                    {/* <a
-                        href="#contact"
-                        className="ml-4 px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition"
-                    >
-                        Get Started
-                    </a> */}
+                    { isLoggedIn && <Button className="bg-amber-800" onClick={handleLogout} variant="outline">Logout</Button>}
                 </nav>
 
                 {/* Mobile Hamburger */}
@@ -78,22 +81,12 @@ export default function Header() {
             >
                 <nav className="flex flex-col items-center gap-4 pb-6">
                     {navLinks.map(({ label, href }) => (
-                        <a
-                            key={label}
-                            href={href}
-                            onClick={() => setOpen(false)}
-                            className="text-gray-700 hover:text-indigo-600"
-                        >
-                            {label}
-                        </a>
+
+                        <Link key={label} to={href} className="text-gray-700 hover:text-indigo-600 transition-colors">
+                            <Button variant="outline">{label}</Button>
+                        </Link>
                     ))}
-                    {/* <a
-                        href="#contact"
-                        onClick={() => setOpen(false)}
-                        className="mt-2 px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700"
-                    >
-                        Get Started
-                    </a> */}
+                   { isLoggedIn && <Button onClick={handleLogout} variant="outline">Logout</Button>}
                 </nav>
             </div>
         </header>
