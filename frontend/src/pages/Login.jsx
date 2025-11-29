@@ -1,14 +1,18 @@
 import AuthBanner from '@/components/AuthBanner';
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
+import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   // const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const [showPassword, setShowPassword] = useState(false);
+  const navigate=useNavigate();
+
 
 
   const togglePwd = () => {
@@ -18,9 +22,32 @@ const Login = () => {
 
 
 
-  const handleRegister = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log({ username, email, password, confirmPassword });
+
+
+    if (!username || !password) {
+      toast.error('All fields are required');
+      return;
+    }
+
+    const userData = {
+      username,
+      password,
+    }
+    try {
+      const response = await axios.post("http://localhost:8000/api/v1/token/", userData);
+      localStorage.setItem('access_token', response.data.access);
+      localStorage.setItem('refresh_token', response.data.refresh);
+      navigate('/');
+
+    }
+    catch (error) {
+      toast.error("Invalid credentials");
+    }
+
+
+
   };
 
   return (
@@ -29,7 +56,7 @@ const Login = () => {
 
       <div className="relative -mt-40 m-4">
         <form
-          onSubmit={handleRegister}
+          onSubmit={handleLogin}
           className="bg-white max-w-xl w-full mx-auto shadow-[0_2px_10px_-3px_rgba(14,14,14,0.3)] p-6 sm:p-8 rounded-2xl"
         >
           <div className="mb-12">
