@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
+import { Button } from "@/components/ui/button"
 
 export default function Header() {
     const [open, setOpen] = useState(false);
 
     const navLinks = [
-        { label: 'Home', href: '#home' },
-        { label: 'Services', href: '#services' },
-        { label: 'Testimonials', href: '#testimonials' },
-        { label: 'Contact', href: '#contact' },
+
+        { label: 'Login', href: '#login' },
+        { label: 'Register', href: '#register' },
     ];
 
     return (
@@ -15,7 +15,7 @@ export default function Header() {
             <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                 {/* Logo */}
                 <div className="text-2xl font-bold text-gray-900">
-                    Pulse<span className="text-indigo-600">Logix</span>
+                    DevHack <span className="text-indigo-600">Stocx</span>
                 </div>
 
                 {/* Desktop Nav */}
@@ -28,13 +28,16 @@ export default function Header() {
                         >
                             {label}
                         </a>
+
+                        
                     ))}
-                    <a
+                    <Button variant="outline">Button</Button>
+                    {/* <a
                         href="#contact"
                         className="ml-4 px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition"
                     >
                         Get Started
-                    </a>
+                    </a> */}
                 </nav>
 
                 {/* Mobile Hamburger */}
@@ -83,13 +86,13 @@ export default function Header() {
                             {label}
                         </a>
                     ))}
-                    <a
+                    {/* <a
                         href="#contact"
                         onClick={() => setOpen(false)}
                         className="mt-2 px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700"
                     >
                         Get Started
-                    </a>
+                    </a> */}
                 </nav>
             </div>
         </header>
