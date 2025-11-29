@@ -2,6 +2,8 @@ import AuthBanner from '@/components/AuthBanner';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
+import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -16,9 +18,61 @@ const Register = () => {
       ? setShowPassword((v) => !v)
       : setShowConfirmPassword((v) => !v);
 
-  const handleRegister = (e) => {
+  const checkValidation = () => {
+    if (!username || !email || !password || !confirmPassword) {
+      handleToast('All fields are required');
+      return false;
+    }
+    if (password !== confirmPassword) {
+      handleToast('Passwords do not match');
+      return false;
+    }
+  }
+
+  const handleToast = (message, type = "error") => {
+    if (type === "error") {
+      toast.error(message);
+    } else {
+      toast.success(message);
+    }
+  }
+
+  const handleRegister = async (e) => {
     e.preventDefault();
-    console.log({ username, email, password, confirmPassword });
+
+    if (checkValidation() === false) return;
+
+
+    const userData = {
+      username,
+      email,
+      password,
+    }
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/api/v1/register/', userData);
+      console.log(response.data);
+      handleToast('Registration successful', 'success');
+    }
+    catch (error) {
+      console.error('Full error object:', error);
+
+      const serverMsg=error.response.data;
+      if (serverMsg.username) {
+        handleToast(`Username: ${serverMsg.username.join(' ')}`);
+        return;
+      }
+      if (serverMsg.email) {
+        handleToast(`Email: ${serverMsg.email.join(' ')}`);
+        return;
+      }
+      if (serverMsg.password) {
+        handleToast(`Password: ${serverMsg.password.join(' ')}`);
+        return;
+      }
+
+        handleToast(serverMsg);
+    }
+
   };
 
   return (
@@ -43,7 +97,7 @@ const Register = () => {
                 Username
               </label>
               <input
-                required
+
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 type="text"
@@ -58,7 +112,7 @@ const Register = () => {
                 Email
               </label>
               <input
-                required
+
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 type="email"
@@ -74,7 +128,7 @@ const Register = () => {
               </label>
               <div className="relative">
                 <input
-                  required
+
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   type={showPassword ? 'text' : 'password'}
@@ -98,7 +152,7 @@ const Register = () => {
               </label>
               <div className="relative">
                 <input
-                  required
+
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   type={showConfirmPassword ? 'text' : 'password'}
