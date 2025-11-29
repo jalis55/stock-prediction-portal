@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
+import { Link } from 'react-router-dom';
 
 export default function Header() {
     const [open, setOpen] = useState(false);
 
     const navLinks = [
 
-        { label: 'Login', href: '#login' },
-        { label: 'Register', href: '#register' },
+        { label: 'Login', href: '/login' },
+        { label: 'Register', href: '/register' },
     ];
 
     return (
@@ -15,23 +16,23 @@ export default function Header() {
             <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                 {/* Logo */}
                 <div className="text-2xl font-bold text-gray-900">
-                    DevHack <span className="text-indigo-600">Stocx</span>
+                    <Link to="/" >
+                        DevHack <span className="text-indigo-600">Stocx</span>
+                    </Link>
+                    
                 </div>
 
                 {/* Desktop Nav */}
                 <nav className="hidden md:flex items-center gap-6">
                     {navLinks.map(({ label, href }) => (
-                        <a
-                            key={label}
-                            href={href}
-                            className="text-gray-700 hover:text-indigo-600 transition-colors"
-                        >
-                            {label}
-                        </a>
+
+                        <Link key={label} to={href} className="text-gray-700 hover:text-indigo-600 transition-colors">
+                            <Button variant="outline">{label}</Button>
+                        </Link>
 
                         
                     ))}
-                    <Button variant="outline">Button</Button>
+                    
                     {/* <a
                         href="#contact"
                         className="ml-4 px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition"
