@@ -6,6 +6,8 @@ import { BrowserRouter as Router, Route, Routes, BrowserRouter } from 'react-rou
 import Register from './pages/Register';
 import Login from './pages/Login';
 import AuthProvider from './AuthProvider';
+import PrivateRoute from './PrivateRoute';
+import PublicRoute from './pages/PublicRoute';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -17,9 +19,12 @@ function App() {
           <Header />
           <Routes>
             <Route path="/" element={<Main />} />
-            <Route path='/register' element={<Register />} />
-            <Route path='/login' element={<Login />} />
-
+            <Route path='/register' element={<PublicRoute><Register /></PublicRoute>} />
+            <Route path='/login' element={<PublicRoute><Login /></PublicRoute>} />
+            {/* handle private route */}
+            {/* <Route path='dashboard' element={
+              <PrivateRoute><Main /></PrivateRoute>
+            } /> */}
           </Routes>
 
 
