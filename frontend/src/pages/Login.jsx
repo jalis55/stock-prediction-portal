@@ -3,9 +3,9 @@ import React, { use, useContext, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import {AuthContext} from '../AuthProvider';
+import axiosInstance from '@/axiosInstance';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -40,7 +40,7 @@ const Login = () => {
       password,
     }
     try {
-      const response = await axios.post("http://localhost:8000/api/v1/token/", userData);
+      const response = await axiosInstance.post("/token/", userData);
       localStorage.setItem('access_token', response.data.access);
       localStorage.setItem('refresh_token', response.data.refresh);
       setIsLoggedIn(true);

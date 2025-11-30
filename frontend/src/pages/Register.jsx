@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { toast } from 'react-toastify';
-import axios from 'axios';
+import axiosInstance from '@/axiosInstance';
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -49,7 +49,7 @@ const Register = () => {
       password,
     }
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/v1/register/', userData);
+      const response = await axiosInstance.post('/register/', userData);
       console.log(response.data);
       handleToast('Registration successful', 'success');
     }

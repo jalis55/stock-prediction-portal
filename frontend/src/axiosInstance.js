@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-baseUrl = import.meta.env.VITE_BACKEND_BASE_API;
+const baseUrl = import.meta.env.VITE_BACKEND_BASE_API;
 
 const axiosInstance = axios.create({
-    baseURL: baseURL,
+    baseURL: baseUrl,
     headers:{
         'Content-Type':'application/json',
     }
