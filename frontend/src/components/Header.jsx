@@ -5,19 +5,27 @@ import { AuthContext } from '@/AuthProvider';
 
 export default function Header() {
     const [open, setOpen] = useState(false);
-    const {isLoggedIn,setIsLoggedIn}=useContext(AuthContext);
-    const navigate=useNavigate()
+    const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+    const navigate = useNavigate()
 
     const navLinks = [
         { label: 'Login', href: '/login' },
         { label: 'Register', href: '/register' },
     ];
-    const handleLogout=()=>{
-        localStorage.removeItem('access_token');
+    const handleLogout = async () => {
+        try {
+            // Call the backend endpoint to clear the HttpOnly cookies
+            await axiosInstance.post('/logout/');
+        } catch (error) {
+            console.error("Logout failed:", error);
+            // Handle potential errors, but usually a logout proceeds anyway
+        }
+
+        // Remove any client-side state/flags
+        // localStorage.removeItem('access_token'); // <-- REMOVE THIS LINE
         setIsLoggedIn(false);
         navigate('/login');
-
-    }
+    };
 
     return (
         <header className="col-span-4 col-start-1 sticky top-0 z-50 bg-white/90 backdrop-blur shadow-sm">
@@ -27,7 +35,7 @@ export default function Header() {
                     <Link to="/" >
                         DevHack <span className="text-indigo-600">Stocx</span>
                     </Link>
-                    
+
                 </div>
 
                 {/* Desktop Nav */}
@@ -38,10 +46,10 @@ export default function Header() {
                             <Button variant="outline">{label}</Button>
                         </Link>
 
-                        
+
                     ))}
-                    
-                    { isLoggedIn && <Button className="bg-amber-800" onClick={handleLogout} variant="outline">Logout</Button>}
+
+                    {isLoggedIn && <Button className="bg-amber-800" onClick={handleLogout} variant="outline">Logout</Button>}
                 </nav>
 
                 {/* Mobile Hamburger */}
@@ -86,7 +94,7 @@ export default function Header() {
                             <Button variant="outline">{label}</Button>
                         </Link>
                     ))}
-                   { isLoggedIn && <Button onClick={handleLogout} variant="outline">Logout</Button>}
+                    {isLoggedIn && <Button onClick={handleLogout} variant="outline">Logout</Button>}
                 </nav>
             </div>
         </header>

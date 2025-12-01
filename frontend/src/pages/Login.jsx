@@ -4,18 +4,22 @@ import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import {AuthContext} from '../AuthProvider';
+import { AuthContext } from '../AuthProvider';
 import axiosInstance from '@/axiosInstance';
+import { Loader } from 'lucide-react';
+
 
 const Login = () => {
   const [username, setUsername] = useState('');
   // const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const navigate=useNavigate();
-  const {isLoggedIn,setIsLoggedIn}=useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
 
-  
+
+
 
 
 
@@ -29,35 +33,32 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-
     if (!username || !password) {
       toast.error('All fields are required');
       return;
     }
 
-    const userData = {
-      username,
-      password,
-    }
+    setIsLoading(true); // 1. ──►  move it here
+
     try {
-      const response = await axiosInstance.post("/token/", userData);
-      localStorage.setItem('access_token', response.data.access);
-      localStorage.setItem('refresh_token', response.data.refresh);
+      await axiosInstance.post('/token/', { username, password });
       setIsLoggedIn(true);
       navigate('/');
-
+    } catch (err) {
+      const msg =
+        err.response?.data?.detail ||
+        err.response?.data?.message ||
+        'Login failed – please try again';
+      toast.error(msg);
+    } finally {
+      setIsLoading(false);
     }
-    catch (error) {
-      toast.error("Invalid credentials");
-    }
-
-
-
   };
 
   return (
     <div className="relative">
       <AuthBanner />
+
 
       <div className="relative -mt-40 m-4">
         <form
@@ -86,20 +87,7 @@ const Login = () => {
               />
             </div>
 
-            {/* Email
-            <div>
-              <label className="text-slate-900 text-xs font-medium block mb-2">
-                Email
-              </label>
-              <input
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                type="email"
-                placeholder="Enter email"
-                className="w-full bg-transparent text-sm text-slate-900 border-b border-slate-300 focus:border-blue-500 pl-2 py-3 outline-none"
-              />
-            </div> */}
+
 
             {/* Password */}
             <div>
@@ -132,10 +120,18 @@ const Login = () => {
           <div className="mt-12">
             <button
               type="submit"
+              disabled={isLoading}
+
               className="w-full shadow-xl py-2.5 px-4 text-sm font-medium tracking-wider rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none cursor-pointer transition-all"
             >
-              Login
+              {isLoading ? (
+                'Loading..'
+              ) : 'Login'}
             </button>
+
+
+
+
             <p className="text-slate-600 text-sm mt-6 text-center">
               Already have an account?
               <Link
